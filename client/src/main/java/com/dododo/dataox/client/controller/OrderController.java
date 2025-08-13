@@ -124,11 +124,7 @@ public class OrderController {
             throw new IllegalArgumentException("supplier client must be active");
         }
 
-        try {
-            return new ResponseEntity<>(orderService.createNewOrder(newOrder, supplier), CREATED);
-        } catch (TooManyRequestsException e) {
-            return new ResponseEntity<>(TOO_MANY_REQUESTS);
-        }
+        return new ResponseEntity<>(orderService.createNewOrder(newOrder, supplier), CREATED);
     }
 
     @ApiResponses({

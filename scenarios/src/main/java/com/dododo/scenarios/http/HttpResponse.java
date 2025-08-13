@@ -1,6 +1,5 @@
 package com.dododo.scenarios.http;
 
-import java.util.List;
 import java.util.Map;
 
 public class HttpResponse {

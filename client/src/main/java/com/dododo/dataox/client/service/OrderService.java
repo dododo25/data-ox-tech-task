@@ -76,7 +76,7 @@ public class OrderService {
     }
 
     public Order createNewOrder(OrderDAO newOrder, Client supplier)
-            throws ExecutionException, InterruptedException, TooManyRequestsException {
+            throws ExecutionException, InterruptedException {
         if (!cache.containsKey(supplier.getId())) {
             cache.put(supplier.getId(), createNewBucket());
         }
@@ -107,7 +107,7 @@ public class OrderService {
             LOGGER.info("create new order - {}", saved);
 
             return saved;
-        }, (long) (Math.random() * 10), TimeUnit.SECONDS).get();
+        }, (long) (Math.random() * 9 + 1), TimeUnit.SECONDS).get();
     }
 
     public Order closeOrder(Long id, Client consumer) {

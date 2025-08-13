@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.contains;
+import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.ignoreCase;
 
 @RestController
 @RequestMapping("/client")
@@ -110,10 +111,22 @@ public class ClientController {
 
         if (address != null) {
             client.setAddress(address);
-            matcher = matcher.withMatcher("address", contains());
+            matcher = matcher.withMatcher("address", ignoreCase().contains());
         }
 
         return clientRepository.findAll(Example.of(client, matcher));
+    }
+
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Client.class))))
+    })
+    @GetMapping("/find/range")
+    public List<Client> getAllByRange(@RequestParam double from, @RequestParam double to) {
+        return clientRepository.findAllByProfitBetween(from, to);
     }
 
     @ApiResponses({
