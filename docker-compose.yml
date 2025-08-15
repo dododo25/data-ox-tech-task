@@ -1,0 +1,50 @@
+services:
+  migrations:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./migrations/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+  client:
+    ports:
+      - "8081:8081"
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+    depends_on:
+      migrations:
+       condition: service_completed_successfully
+  admin:
+    ports:
+      - "8082:8082"
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./admin/Dockerfile
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    restart: unless-stopped
+    volumes:
+      - data-ox:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "--quiet"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  data-ox:

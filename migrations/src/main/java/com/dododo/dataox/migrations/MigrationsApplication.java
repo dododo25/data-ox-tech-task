@@ -5,8 +5,12 @@ import org.flywaydb.core.Flyway;
 public class MigrationsApplication {
 
     public static void main(String[] args) {
+        String dbUrl      = System.getenv("DB_URL");
+        String dbUsername = System.getenv("DB_USERNAME");
+        String dbPassword = System.getenv("DB_PASSWORD");
+
         Flyway flyway = Flyway.configure()
-                .dataSource("jdbc:postgresql://localhost:5432/dataox", "postgres", "postgres")
+                .dataSource(dbUrl, dbUsername, dbPassword)
                 .load();
 
         flyway.migrate();
